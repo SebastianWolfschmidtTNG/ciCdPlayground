@@ -32,7 +32,7 @@ pipeline {
 
         stage('publishtestresults'){
             steps {
-            junit '**/reports/**/*.xml'
+                junit testResults: '**/reports/**/*.xml', allowEndResults: true
             }
         }
 
