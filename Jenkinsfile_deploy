@@ -7,12 +7,11 @@ pipeline {
     stages {
         stage('install') {
             steps {
-                sh 'yarn'
+                sh 'yarn install' // Ensure 'yarn install' is explicitly called
             }
         }
 
-        stage('unittests')
-        {
+        stage('unittests') {
             steps {
                 sh 'yarn test'
             }
@@ -32,34 +31,36 @@ pipeline {
 
         stage('deploy') {
             steps {
-                s3Upload consoleLogLevel: 'INFO', 
-                  dontSetBuildResultOnFailure: false, 
-                  dontWaitForConcurrentBuildCompletion: false, 
-                  entries: [[
-                      bucket: "cicd-workshop-playground/${env.GIT_URL.split('/')[3]}", 
-                      excludedFile: '', 
-                      flatten: false, 
-                      gzipFiles: false, 
-                      keepForever: false, 
-                      managedArtifacts: false, 
-                      noUploadOnFailure: false, 
-                      selectedRegion: 'eu-central-1', 
-                      showDirectlyInBrowser: false, 
-                      sourceFile: 'public/**/*.*', 
-                      storageClass: 'STANDARD', 
-                      uploadFromSlave: false, 
-                      useServerSideEncryption: false
-                    ]], 
-                    pluginFailureResultConstraint: 'FAILURE', 
-                    profileName: 'role-based-access', 
+                s3Upload(
+                    consoleLogLevel: 'INFO',
+                    dontSetBuildResultOnFailure: false,
+                    dontWaitForConcurrentBuildCompletion: false,
+                    entries: [[
+                        bucket: "cicd-workshop-playground/${env.GIT_URL.split('/')[3]}",
+                        excludedFile: '',
+                        flatten: false,
+                        gzipFiles: false,
+                        keepForever: false,
+                        managedArtifacts: false,
+                        noUploadOnFailure: false,
+                        selectedRegion: 'eu-central-1',
+                        showDirectlyInBrowser: false,
+                        sourceFile: 'public/**/*.*',
+                        storageClass: 'STANDARD',
+                        uploadFromSlave: false,
+                        useServerSideEncryption: false
+                    ]],
+                    pluginFailureResultConstraint: 'FAILURE',
+                    profileName: 'role-based-access',
                     userMetadata: []
+                )
             }
         }
+    }
 
     post {
         always {
-            junit 'reports/**/*.xml'
+            junit 'reports/**/*.xml' // Ensure this path matches where your test reports are generated
         }
-    }
     }
 }
