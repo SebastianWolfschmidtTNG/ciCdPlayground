@@ -5,6 +5,12 @@ pipeline {
     }
 
     stages {
+        stage('checkout'){
+          steps {
+                git branch: 'main', url: 'https://github.com/SebastianWolfschmidtTNG/ciCdPlayground'
+          }
+        }
+
         stage('install') {
             steps {
                 sh 'yarn install' // Ensure 'yarn install' is explicitly called
