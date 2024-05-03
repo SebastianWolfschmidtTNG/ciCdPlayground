@@ -27,11 +27,6 @@ pipeline {
         stage('integrationtests') {
             steps {
                 sh 'yarn test:e2e'
-            }
-        }
-
-        stage('publishtestresults'){
-            steps {
                 junit testResults: '**/reports/**/*.xml', allowEndResults: true
             }
         }
