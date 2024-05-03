@@ -27,7 +27,6 @@ pipeline {
         stage('integrationtests') {
             steps {
                 sh 'yarn test:e2e'
-                junit 'reports/**/*.xml'
             }
         }
 
@@ -56,5 +55,11 @@ pipeline {
                     userMetadata: []
             }
         }
+
+    post {
+        always {
+            junit 'reports/**/*.xml'
+        }
+    }
     }
 }
